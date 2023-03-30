@@ -13,7 +13,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: []
+        version:
+        - "20.10.23"
+        flavor:
+        - "ubuntu22.04"
+        include:
+        - version: "20.10.23"
+          flavor: "ubuntu22.04"
+          latest: true
 
     steps:
     - name: Checkout
@@ -56,13 +63,13 @@ jobs:
         flavor: |-
           latest=${{ !!matrix.latest }}
         tags: |-
-          type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
+          type=semver,pattern={{major}}.{{minor}},suffix=-${{ matrix.flavor }},value=${{ matrix.version }}
 
     - name: Build
       uses: docker/build-push-action@v4
       id: build
       with:
-        context: .
+        context: ${{ matrix.flavor }}
         build-args: |
           version=${{ matrix.version }}
         push: true
