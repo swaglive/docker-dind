@@ -61,6 +61,8 @@ RUN		wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/doc
 
 FROM 	${base}
 
+ARG		base=ubuntu:22.04
+
 ENV 	DOCKER_VERSION=${version}
 ENV 	DOCKER_BUILDX_VERSION=${version_buildx}
 ENV		DOCKER_COMPOSE_VERSION=${version_compose}
@@ -106,7 +108,7 @@ RUN 	mkdir -p /certs /certs/client && \
 		wget -q -O - https://nvidia.github.io/libnvidia-container/${base}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
 		apt-get update && \
 		apt-get install -y \
-			nvidia-container-toolkit-base && \
+			nvidia-container-toolkit && \
 		addgroup --system dockremap && \
 		adduser --system --group dockremap && \
 		echo 'dockremap:165536:65536' >> /etc/subuid && \
