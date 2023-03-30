@@ -85,8 +85,6 @@ RUN 	mkdir -p /certs /certs/client && \
 		chmod +x /usr/local/bin/docker-entrypoint.sh && \
 		chmod +x /usr/local/bin/dockerd-entrypoint.sh && \
 		chmod +x /usr/local/bin/modprobe && \
-		wget -q -O - https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
-		wget -q -O - https://nvidia.github.io/libnvidia-container/${base}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
 		apt-get update && \
 		apt-get install -y \
 			ca-certificates \
@@ -101,7 +99,11 @@ RUN 	mkdir -p /certs /certs/client && \
 			xz-utils \
 			pigz \
 			zfsutils-linux \
-			kmod \
+			kmod && \
+		wget -q -O - https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
+		wget -q -O - https://nvidia.github.io/libnvidia-container/${base}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
+		apt-get update && \
+		apt-get install -y \
 			nvidia-container-toolkit-base && \
 		addgroup --system dockremap && \
 		adduser --system --group dockremap && \
