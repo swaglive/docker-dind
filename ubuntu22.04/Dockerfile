@@ -87,6 +87,8 @@ RUN 	mkdir -p /certs /certs/client && \
 		chmod +x /usr/local/bin/modprobe && \
 		apt-get update && \
 		apt-get install -y \
+			wget \
+			gnupg \
 			ca-certificates \
 			openssh-client \
 			btrfs-progs \
