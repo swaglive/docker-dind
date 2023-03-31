@@ -83,9 +83,10 @@ COPY 	dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
 
 RUN 	mkdir -p /certs /certs/client /etc/docker && \
         chmod 1777 /certs /certs/client && \
-        chmod +x /usr/local/bin/docker-entrypoint.sh && \
-        chmod +x /usr/local/bin/dockerd-entrypoint.sh && \
-        chmod +x /usr/local/bin/modprobe && \
+        chmod +x \
+            /usr/local/bin/docker-entrypoint.sh \
+            /usr/local/bin/dockerd-entrypoint.sh \
+            /usr/local/bin/modprobe && \
         apt-get update && \
         apt-get install -y \
             wget \
