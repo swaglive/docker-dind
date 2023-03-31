@@ -17,6 +17,7 @@ jobs:
         - "20.10.23"
         flavor:
         - "ubuntu22.04"
+        - "ubuntu22.04-nvidia"
         include:
         - version: "20.10.23"
           flavor: "ubuntu22.04"
