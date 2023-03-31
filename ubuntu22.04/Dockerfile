@@ -5,10 +5,10 @@ ARG		base=ubuntu:22.04
 FROM 	${base} as base
 
 RUN 	mkdir -p /usr/libexec/docker/cli-plugins && \
-		apt-get update && \
-		apt-get install -y \
-			ca-certificates \
-			wget
+        apt-get update && \
+        apt-get install -y \
+            ca-certificates \
+            wget
 
 ###
 
@@ -19,11 +19,11 @@ ARG		version=
 RUN 	[ -e /etc/nsswitch.conf ] && grep '^hosts:\s*files\s*dns' /etc/nsswitch.conf
 
 RUN 	wget -q -O - https://download.docker.com/linux/static/stable/$(uname -m)/docker-${version}.tgz | tar xz \
-			--strip-components 1 \
-			--directory /usr/local/bin \
-			--no-same-owner \
-			--exclude \
-			'docker/docker'
+            --strip-components 1 \
+            --directory /usr/local/bin \
+            --no-same-owner \
+            --exclude \
+            'docker/docker'
 
 ###
 
@@ -34,7 +34,7 @@ ARG		version_buildx=0.10.4
 WORKDIR /usr/libexec/docker/cli-plugins
 
 RUN 	wget -q -O docker-buildx https://github.com/docker/buildx/releases/download/v${version_buildx}/buildx-v${version_buildx}.linux-$(dpkg --print-architecture) && \
-		chmod +x docker-buildx
+        chmod +x docker-buildx
 
 ###
 
@@ -45,7 +45,7 @@ ARG		version_compose=2.17.2
 WORKDIR /usr/libexec/docker/cli-plugins
 
 RUN 	wget -q -O docker-compose https://github.com/docker/compose/releases/download/v${version_compose}/docker-compose-linux-$(uname -m) && \
-		chmod +x docker-compose
+        chmod +x docker-compose
 
 ###
 
@@ -54,7 +54,7 @@ FROM	base as dind
 ARG		version_dind=1f32e3c95d72a29b3eaacba156ed675dba976cb5
 
 RUN		wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${version_dind}/hack/dind && \
-		chmod +x /usr/local/bin/dind
+        chmod +x /usr/local/bin/dind
 
 ###
 
@@ -82,39 +82,39 @@ COPY 	docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY 	dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
 
 RUN 	source /etc/lsb-release && \
-		mkdir -p /certs /certs/client && \
-		chmod 1777 /certs /certs/client && \
-		chmod +x /usr/local/bin/docker-entrypoint.sh && \
-		chmod +x /usr/local/bin/dockerd-entrypoint.sh && \
-		chmod +x /usr/local/bin/modprobe && \
-		apt-get update && \
-		apt-get install -y \
-			wget \
-			gnupg \
-			ca-certificates \
-			openssh-client \
-			btrfs-progs \
-			e2fsprogs \
-			iptables \
-			iproute2 \
-			openssl \
-			uidmap \
-			xfsprogs \
-			xz-utils \
-			pigz \
-			zfsutils-linux \
-			kmod && \
-		wget -q -O - https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
-		wget -q -O - https://nvidia.github.io/libnvidia-container/${DISTRIB_ID@L}${DISTRIB_RELEASE}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
-		apt-get update && \
-		apt-get install -y \
-			nvidia-container-toolkit && \
-		addgroup --system dockremap && \
-		adduser --system --group dockremap && \
-		echo 'dockremap:165536:65536' >> /etc/subuid && \
-		echo 'dockremap:165536:65536' >> /etc/subgid && \
-		nvidia-ctk runtime configure --runtime=docker && \
-		dockerd --version && \
-		containerd --version && \
-		ctr --version && \
-		runc --version
+        mkdir -p /certs /certs/client && \
+        chmod 1777 /certs /certs/client && \
+        chmod +x /usr/local/bin/docker-entrypoint.sh && \
+        chmod +x /usr/local/bin/dockerd-entrypoint.sh && \
+        chmod +x /usr/local/bin/modprobe && \
+        apt-get update && \
+        apt-get install -y \
+            wget \
+            gnupg \
+            ca-certificates \
+            openssh-client \
+            btrfs-progs \
+            e2fsprogs \
+            iptables \
+            iproute2 \
+            openssl \
+            uidmap \
+            xfsprogs \
+            xz-utils \
+            pigz \
+            zfsutils-linux \
+            kmod && \
+        wget -q -O - https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
+        wget -q -O - https://nvidia.github.io/libnvidia-container/${DISTRIB_ID@L}${DISTRIB_RELEASE}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
+        apt-get update && \
+        apt-get install -y \
+            nvidia-container-toolkit && \
+        addgroup --system dockremap && \
+        adduser --system --group dockremap && \
+        echo 'dockremap:165536:65536' >> /etc/subuid && \
+        echo 'dockremap:165536:65536' >> /etc/subgid && \
+        nvidia-ctk runtime configure --runtime=docker && \
+        dockerd --version && \
+        containerd --version && \
+        ctr --version && \
+        runc --version
