@@ -19,6 +19,7 @@ jobs:
         flavor:
         - "ubuntu22.04"
         - "ubuntu22.04-nvidia"
+        - "ubuntu22.04-testing"
         include:
         - version: "23.0.2"
           flavor: "ubuntu22.04"
