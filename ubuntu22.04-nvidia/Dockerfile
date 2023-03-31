@@ -1,4 +1,4 @@
-ARG     base=ubuntu:22.04
+ARG     base=nvidia/cuda:12.1.0-devel-ubuntu22.04
 
 ###
 
