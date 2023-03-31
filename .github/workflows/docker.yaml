@@ -18,11 +18,15 @@ jobs:
         - "23.0.2"
         flavor:
         - "ubuntu22.04"
+        - "ubuntu22.04-nvidia470.57"
         - "ubuntu22.04-nvidia520.56"
         include:
         - version: "23.0.2"
           flavor: "ubuntu22.04"
           latest: true
+        - flavor: "ubuntu22.04-nvidia470.57"
+          context: "ubuntu22.04-nvidia"
+          cuda: "11.4.3"
         - flavor: "ubuntu22.04-nvidia520.56"
           context: "ubuntu22.04-nvidia"
           cuda: "12.0.1"
