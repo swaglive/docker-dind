@@ -63,8 +63,8 @@ FROM 	${base}
 ARG		base=ubuntu:22.04
 
 ENV 	DOCKER_VERSION=${version}
-ENV 	DOCKER_BUILDX_VERSION=${version_buildx}
-ENV		DOCKER_COMPOSE_VERSION=${version_compose}
+ENV     DOCKER_BUILDX_VERSION=${version_buildx}
+ENV     DOCKER_COMPOSE_VERSION=${version_compose}
 ENV 	DIND_COMMIT=${version_dind}
 ENV 	DOCKER_TLS_CERTDIR=/certs
 
