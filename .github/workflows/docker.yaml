@@ -15,11 +15,12 @@ jobs:
       matrix:
         version:
         - "20.10.23"
+        - "23.0.2"
         flavor:
         - "ubuntu22.04"
         - "ubuntu22.04-nvidia"
         include:
-        - version: "20.10.23"
+        - version: "23.0.2"
           flavor: "ubuntu22.04"
           latest: true
 
