@@ -1,4 +1,5 @@
-ARG     base=nvidia/cuda:12.1.0-devel-ubuntu22.04
+ARG     cuda=
+ARG     base=nvidia/cuda:${cuda}-runtime-ubuntu22.04
 
 ###
 
