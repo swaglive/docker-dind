@@ -21,9 +21,7 @@ RUN 	[ -e /etc/nsswitch.conf ] && grep '^hosts:\s*files\s*dns' /etc/nsswitch.con
 RUN 	wget -q -O - https://download.docker.com/linux/static/stable/$(uname -m)/docker-${version}.tgz | tar xz \
             --strip-components 1 \
             --directory /usr/local/bin \
-            --no-same-owner \
-            --exclude \
-            'docker/docker'
+            --no-same-owner
 
 ###
 
