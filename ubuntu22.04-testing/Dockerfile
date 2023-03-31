@@ -248,5 +248,7 @@ COPY dockerd-entrypoint.sh /usr/local/bin/
 VOLUME /var/lib/docker
 EXPOSE 2375 2376
 
+RUN     update-alternatives --set iptables $(which iptables-legacy)
+
 ENTRYPOINT ["dockerd-entrypoint.sh"]
 CMD []
