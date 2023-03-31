@@ -108,6 +108,8 @@ RUN 	mkdir -p /certs /certs/client /etc/docker && \
         adduser --system --group dockremap && \
         echo 'dockremap:165536:65536' >> /etc/subuid && \
         echo 'dockremap:165536:65536' >> /etc/subgid && \
+        # HACK: ubuntu 22.04 uses iptables-nft by default, but docker doesn't support it yet
+        update-alternatives --set iptables $(which iptables-legacy) && \
         dockerd --version && \
         containerd --version && \
         ctr --version && \
