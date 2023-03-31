@@ -162,8 +162,8 @@ ENV DOCKER_TLS_CERTDIR=/certs
 RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
 # (doing both /certs and /certs/client so that if Docker does a "copy-up" into a volume defined on /certs/client, it will "do the right thing" by default in a way that still works for rootless users)
 
-ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["sh"]
+# ENTRYPOINT ["docker-entrypoint.sh"]
+# CMD ["sh"]
 
 # https://github.com/docker/docker/blob/master/project/PACKAGERS.md#runtime-dependencies
 RUN set -eux; \
