@@ -8,8 +8,7 @@ RUN 	mkdir -p /usr/libexec/docker/cli-plugins && \
 		apt-get update && \
 		apt-get install -y \
 			ca-certificates \
-        	wget \
-			dpkg-dev
+			wget
 
 ###
 
@@ -34,7 +33,7 @@ ARG		version_buildx=0.10.4
 
 WORKDIR /usr/libexec/docker/cli-plugins
 
-RUN 	wget -q -O docker-buildx https://github.com/docker/buildx/releases/download/v${version_buildx}/buildx-v${version_buildx}.linux-$(dpkg-architecture -q DEB_BUILD_ARCH) && \
+RUN 	wget -q -O docker-buildx https://github.com/docker/buildx/releases/download/v${version_buildx}/buildx-v${version_buildx}.linux-$(dpkg --print-architecture) && \
 		chmod +x docker-buildx
 
 ###
