@@ -174,6 +174,7 @@ RUN set -eux; \
 		# ip6tables \
 		iptables \
 		openssl \
+                iproute2 \
 		# shadow-uidmap \
                 uidmap \
 		xfsprogs \
