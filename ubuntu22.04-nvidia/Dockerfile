@@ -1,4 +1,4 @@
-ARG		base=ubuntu:22.04
+ARG     base=ubuntu:22.04
 
 ###
 
@@ -14,7 +14,7 @@ RUN 	mkdir -p /usr/libexec/docker/cli-plugins && \
 
 FROM 	base as docker
 
-ARG		version=
+ARG     version=
 
 RUN 	[ -e /etc/nsswitch.conf ] && grep '^hosts:\s*files\s*dns' /etc/nsswitch.conf
 
@@ -29,7 +29,7 @@ RUN 	wget -q -O - https://download.docker.com/linux/static/stable/$(uname -m)/do
 
 FROM 	base as docker-buildx
 
-ARG		version_buildx=0.10.4
+ARG     version_buildx=0.10.4
 
 WORKDIR /usr/libexec/docker/cli-plugins
 
@@ -40,7 +40,7 @@ RUN 	wget -q -O docker-buildx https://github.com/docker/buildx/releases/download
 
 FROM 	base as docker-compose
 
-ARG		version_compose=2.17.2
+ARG     version_compose=2.17.2
 
 WORKDIR /usr/libexec/docker/cli-plugins
 
@@ -51,16 +51,16 @@ RUN 	wget -q -O docker-compose https://github.com/docker/compose/releases/downlo
 
 FROM	base as dind
 
-ARG		version_dind=1f32e3c95d72a29b3eaacba156ed675dba976cb5
+ARG     version_dind=1f32e3c95d72a29b3eaacba156ed675dba976cb5
 
-RUN		wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${version_dind}/hack/dind && \
+RUN     wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${version_dind}/hack/dind && \
         chmod +x /usr/local/bin/dind
 
 ###
 
 FROM 	${base}
 
-ARG		base=ubuntu:22.04
+ARG     base=ubuntu:22.04
 
 ENV 	DOCKER_VERSION=${version}
 ENV     DOCKER_BUILDX_VERSION=${version_buildx}
