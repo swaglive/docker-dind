@@ -24,7 +24,6 @@ jobs:
         - "ubuntu22.04-nvidia520.56"
         include:
         - flavor: "ubuntu22.04-nvidia520.56"
-          context: "ubuntu22.04-nvidia"
           cuda: "12.0.1"
 
     steps:
@@ -74,7 +73,7 @@ jobs:
       uses: docker/build-push-action@v5
       id: build
       with:
-        context: ${{ matrix.context || matrix.flavor }}
+        context: .
         build-args: |
           version=${{ matrix.version }}
           cuda=${{ matrix.cuda }}
