@@ -17,14 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
-        - "20.10.23"
-        - "23.0.2"
-        - "24.0.2"
-        flavor:
-        - "ubuntu22.04-nvidia520.56"
-        include:
-        - flavor: "ubuntu22.04-nvidia520.56"
-          cuda: "12.0.1"
+        - "24.0.7"
 
     steps:
     - name: Checkout
@@ -67,7 +60,8 @@ jobs:
         flavor: |-
           latest=${{ !!matrix.latest }}
         tags: |-
-          type=semver,pattern={{major}}.{{minor}},suffix=-${{ matrix.flavor }},value=${{ matrix.version }}
+          type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
+          type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ matrix.version }}
 
     - name: Build
       uses: docker/build-push-action@v5
@@ -76,7 +70,6 @@ jobs:
         context: .
         build-args: |
           version=${{ matrix.version }}
-          cuda=${{ matrix.cuda }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}

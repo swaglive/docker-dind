@@ -1,125 +1,72 @@
-ARG     cuda=
-ARG     base=nvidia/cuda:${cuda}-runtime-ubuntu22.04
+ARG         base=ubuntu:22.04
 
 ###
 
-FROM 	${base} as base
+FROM	    alpine as dind
 
-RUN 	mkdir -p /usr/libexec/docker/cli-plugins && \
-        apt-get update && \
-        apt-get install -y \
-            ca-certificates \
-            wget
+ARG         dind=1f32e3c95d72a29b3eaacba156ed675dba976cb5
 
-###
-
-FROM 	base as docker
-
-ARG     version=
-
-RUN 	[ -e /etc/nsswitch.conf ] && grep '^hosts:\s*files\s*dns' /etc/nsswitch.conf
-
-RUN 	wget -q -O - https://download.docker.com/linux/static/stable/$(uname -m)/docker-${version}.tgz | tar xz \
-            --strip-components 1 \
-            --directory /usr/local/bin \
-            --no-same-owner
+RUN         wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${dind}/hack/dind && \
+            chmod +x /usr/local/bin/dind
 
 ###
 
-FROM 	base as docker-buildx
+FROM        ${base}
 
-ARG     version_buildx=0.10.4
+ARG         TARGETARCH
 
-WORKDIR /usr/libexec/docker/cli-plugins
+ARG         version=
 
-RUN 	wget -q -O docker-buildx https://github.com/docker/buildx/releases/download/v${version_buildx}/buildx-v${version_buildx}.linux-$(dpkg --print-architecture) && \
-        chmod +x docker-buildx
+ARG         containerd=1.6.9
+ARG         docker_buildx_plugin=0.11.2
+ARG         docker_compose_plugin=2.21.0
 
-###
+COPY 	    modprobe.sh /usr/local/bin/modprobe
+COPY 	    docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY 	    dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
 
-FROM 	base as docker-compose
+VOLUME 	    /var/lib/docker
+EXPOSE 	    2375/tcp 2376/tcp
 
-ARG     version_compose=2.17.2
+# ENTRYPOINT  ["dockerd-entrypoint.sh"]
+ENTRYPOINT  ["dockerd"]
 
-WORKDIR /usr/libexec/docker/cli-plugins
-
-RUN 	wget -q -O docker-compose https://github.com/docker/compose/releases/download/v${version_compose}/docker-compose-linux-$(uname -m) && \
-        chmod +x docker-compose
-
-###
-
-FROM	base as dind
-
-ARG     version_dind=1f32e3c95d72a29b3eaacba156ed675dba976cb5
-
-RUN     wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${version_dind}/hack/dind && \
-        chmod +x /usr/local/bin/dind
-
-###
-
-FROM 	${base}
-
-ARG     base=ubuntu:22.04
-
-ENV 	DOCKER_VERSION=${version}
-ENV     DOCKER_BUILDX_VERSION=${version_buildx}
-ENV     DOCKER_COMPOSE_VERSION=${version_compose}
-ENV 	DIND_COMMIT=${version_dind}
-ENV 	DOCKER_TLS_CERTDIR=/certs
-
-VOLUME 	/var/lib/docker
-EXPOSE 	2375/tcp 2376/tcp
-ENTRYPOINT ["dockerd-entrypoint.sh"]
-
-COPY	--from=docker /usr/local/bin/ /usr/local/bin/
-COPY	--from=docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx /usr/libexec/docker/cli-plugins/docker-buildx
-COPY	--from=docker-compose /usr/libexec/docker/cli-plugins/docker-compose /usr/libexec/docker/cli-plugins/docker-compose
-COPY	--from=dind /usr/local/bin/dind /usr/local/bin/dind
-
-COPY 	modprobe.sh /usr/local/bin/modprobe
-COPY 	docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-COPY 	dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
-
-RUN 	mkdir -p /certs /certs/client /etc/docker && \
-        chmod 1777 /certs /certs/client && \
-        chmod +x \
-            /usr/local/bin/docker-entrypoint.sh \
-            /usr/local/bin/dockerd-entrypoint.sh \
-            /usr/local/bin/modprobe && \
-        apt-get update && \
-        apt-get install -y \
-            wget \
-            gnupg \
-            ca-certificates \
-            openssh-client \
-            btrfs-progs \
-            e2fsprogs \
-            iptables \
-            iproute2 \
-            openssl \
-            uidmap \
-            xfsprogs \
-            xz-utils \
-            pigz \
-            zfsutils-linux \
-            kmod && \
-        addgroup --system dockremap && \
-        adduser --system --group dockremap && \
-        echo 'dockremap:165536:65536' >> /etc/subuid && \
-        echo 'dockremap:165536:65536' >> /etc/subgid && \
-        # HACK: ubuntu 22.04 uses iptables-nft by default, but docker doesn't support it yet
-        update-alternatives --set iptables $(which iptables-legacy) && \
-        dockerd --version && \
-        containerd --version && \
-        ctr --version && \
-        runc --version
-
-SHELL   ["/bin/bash", "-eu", "-o", "pipefail", "-c"] 
-
-RUN     source /etc/lsb-release && \
-        wget -q -O - https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
-        wget -q -O - https://nvidia.github.io/libnvidia-container/${DISTRIB_ID@L}${DISTRIB_RELEASE}/libnvidia-container.list | sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
-        apt-get update && \
-        apt-get install -y \
-            nvidia-container-toolkit && \
-        nvidia-ctk runtime configure --runtime=docker
+COPY        --from=dind /usr/local/bin/dind /usr/local/bin/dind
+            
+            # Install docker
+RUN         apt-get update && \
+            apt-get install -y \
+                curl \
+                ca-certificates \
+                gnupg2 \
+                iptables \
+                libdevmapper1* && \
+            . /etc/os-release; curl -s --parallel --parallel-immediate --parallel-max 5 \
+                --output containerd.io.deb https://download.docker.com/linux/ubuntu/dists/${VERSION_CODENAME}/pool/stable/${TARGETARCH}/containerd.io_${containerd}-1_${TARGETARCH}.deb \
+                --output docker-buildx-plugin.deb https://download.docker.com/linux/ubuntu/dists/${VERSION_CODENAME}/pool/stable/${TARGETARCH}/docker-buildx-plugin_${docker_buildx_plugin}-1~ubuntu.${VERSION_ID}~${VERSION_CODENAME}_${TARGETARCH}.deb \
+                --output docker-ce-cli.deb https://download.docker.com/linux/ubuntu/dists/${VERSION_CODENAME}/pool/stable/${TARGETARCH}/docker-ce-cli_${version}-1~ubuntu.${VERSION_ID}~${VERSION_CODENAME}_${TARGETARCH}.deb \
+                --output docker-ce.deb https://download.docker.com/linux/ubuntu/dists/${VERSION_CODENAME}/pool/stable/${TARGETARCH}/docker-ce_${version}-1~ubuntu.${VERSION_ID}~${VERSION_CODENAME}_${TARGETARCH}.deb \
+                --output docker-compose-plugin.deb https://download.docker.com/linux/ubuntu/dists/${VERSION_CODENAME}/pool/stable/${TARGETARCH}/docker-compose-plugin_${docker_compose_plugin}-1~ubuntu.${VERSION_ID}~${VERSION_CODENAME}_${TARGETARCH}.deb && \
+            dpkg -i \
+                containerd.io.deb \
+                docker-ce.deb \
+                docker-ce-cli.deb \
+                docker-buildx-plugin.deb \
+                docker-compose-plugin.deb && \
+            # Install nvidia-container-toolkit
+            curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg && \
+            curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
+                sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+                    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list && \
+            apt-get update && \
+            apt-get install -y \
+                nvidia-container-toolkit \
+                kmod && \
+            nvidia-ctk runtime configure --runtime=docker && \
+            # Setup
+            mkdir -p /certs /certs/client /etc/docker && \
+            chmod 1777 /certs /certs/client && \
+            dockerd --version && \
+            containerd --version && \
+            ctr --version && \
+            runc --version
