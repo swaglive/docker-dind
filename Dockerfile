@@ -28,7 +28,6 @@ COPY 	    dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
 VOLUME 	    /var/lib/docker
 EXPOSE 	    2375/tcp 2376/tcp
 
-# ENTRYPOINT  ["dockerd-entrypoint.sh"]
 ENTRYPOINT  ["dockerd"]
 
 COPY        --from=dind /usr/local/bin/dind /usr/local/bin/dind
