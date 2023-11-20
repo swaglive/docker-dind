@@ -18,6 +18,9 @@ jobs:
       matrix:
         version:
         - "24.0.7"
+        include:
+        - version: "24.0.7"
+          latest: true
 
     steps:
     - name: Checkout
