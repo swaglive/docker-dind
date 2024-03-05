@@ -11,16 +11,16 @@ ARG         version_major=
 ARG         containerd=1.6.28
 ARG         docker_buildx_plugin=0.12.1
 
-ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/modprobe.sh /usr/local/bin/modprobe
-ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/dind/dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
-ADD         https://raw.githubusercontent.com/docker/docker/${version}/hack/dind /usr/local/bin/dind
-
 VOLUME 	    /var/lib/docker
 EXPOSE 	    2375/tcp 2376/tcp
 
 ENTRYPOINT  ["dockerd"]
             
+ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/modprobe.sh /usr/local/bin/modprobe
+ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/dind/dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
+ADD         https://raw.githubusercontent.com/docker/docker/${version}/hack/dind /usr/local/bin/dind
+
             # Install docker
 RUN         apt-get update && \
             apt-get install -y \
