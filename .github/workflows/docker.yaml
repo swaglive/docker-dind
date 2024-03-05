@@ -79,6 +79,7 @@ jobs:
         build-args: |
           version=${{ matrix.version }}
           version_major=${{ matrix.version_major }}
+          nvidia_container_toolkit=${{ matrix.nvidia_container_toolkit }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}

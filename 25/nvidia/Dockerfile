@@ -2,15 +2,6 @@ ARG         base=ubuntu:22.04
 
 ###
 
-FROM	    ${base} as dind
-
-ARG         dind=65cfcc28ab37cb75e1560e4b4738719c07c6618e
-
-RUN         wget -q -O /usr/local/bin/dind https://raw.githubusercontent.com/docker/docker/${dind}/hack/dind && \
-            chmod +x /usr/local/bin/dind
-
-###
-
 FROM        ${base}
 
 ARG         TARGETARCH
@@ -18,13 +9,13 @@ ARG         TARGETARCH
 ARG         commit=65cfcc28ab37cb75e1560e4b4738719c07c6618e
 ARG         version=
 ARG         version_major=
-ARG         nvidia_container_toolkit=
 ARG         containerd=1.6.28
 ARG         docker_buildx_plugin=0.12.1
 
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/modprobe.sh /usr/local/bin/modprobe
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/dind/dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
+ADD         https://raw.githubusercontent.com/docker/docker/${version}/hack/dind /usr/local/bin/dind
 
 VOLUME 	    /var/lib/docker
 EXPOSE 	    2375/tcp 2376/tcp
