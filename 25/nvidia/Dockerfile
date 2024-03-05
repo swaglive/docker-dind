@@ -41,6 +41,11 @@ RUN         apt-get update && \
                 docker-buildx-plugin.deb && \
             rm *.deb && \
             # Setup
+            chmod +x \
+                /usr/local/bin/modprobe \
+                /usr/local/bin/docker-entrypoint.sh \
+                /usr/local/bin/dockerd-entrypoint.sh \
+                /usr/local/bin/dind && \
             mkdir -p /certs /certs/client /etc/docker && \
             chmod 1777 /certs /certs/client && \
             dockerd --version && \
