@@ -6,7 +6,6 @@ FROM        ${base}
 
 ARG         TARGETARCH
 
-ARG         commit=65cfcc28ab37cb75e1560e4b4738719c07c6618e
 ARG         version=
 ARG         version_major=
 ARG         containerd=1.6.28
@@ -21,8 +20,6 @@ VOLUME 	    /var/lib/docker
 EXPOSE 	    2375/tcp 2376/tcp
 
 ENTRYPOINT  ["dockerd"]
-
-COPY        --from=dind /usr/local/bin/dind /usr/local/bin/dind
             
             # Install docker
 RUN         apt-get update && \
