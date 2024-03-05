@@ -18,7 +18,9 @@ jobs:
       matrix:
         version:
         - "25.0.3"
-        - "24.0.7"
+        include:
+        - version: "25.0.3"
+          version_major: "25"
 
     steps:
     - name: Checkout
@@ -68,7 +70,7 @@ jobs:
       uses: docker/build-push-action@v5
       id: build
       with:
-        context: .
+        context: ${{ matrix.version_major }}
         build-args: |
           version=${{ matrix.version }}
         push: true
