@@ -18,9 +18,13 @@ jobs:
       matrix:
         version:
         - "25.0.3"
+        flavor:
+        - nvidia
         include:
         - version: "25.0.3"
           version_major: "25"
+        - flavor: nvidia
+          suffix: -nvidia
 
     steps:
     - name: Checkout
@@ -62,6 +66,7 @@ jobs:
           ghcr.io/${{ steps.config.outputs.repo-owner }}/${{ steps.config.outputs.repo-name }}
         flavor: |-
           latest=false
+          suffix=${{ matrix.suffix }}
         tags: |-
           type=semver,pattern={{major}}.{{minor}},value=${{ matrix.version }}
           type=semver,pattern={{major}}.{{minor}}.{{patch}},value=${{ matrix.version }}
@@ -70,9 +75,10 @@ jobs:
       uses: docker/build-push-action@v5
       id: build
       with:
-        context: ${{ matrix.version_major }}
+        context: ${{ matrix.version_major }}/${{ matrix.flavor }}
         build-args: |
           version=${{ matrix.version }}
+          version_major=${{ matrix.version_major }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
