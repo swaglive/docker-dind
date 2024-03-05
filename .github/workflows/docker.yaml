@@ -17,6 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         version:
+        - "25.0.3"
         - "24.0.7"
 
     steps:
