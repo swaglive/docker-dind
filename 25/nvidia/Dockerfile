@@ -19,7 +19,7 @@ ENTRYPOINT  ["dockerd"]
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/modprobe.sh /usr/local/bin/modprobe
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 ADD 	    https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/dind/dockerd-entrypoint.sh /usr/local/bin/dockerd-entrypoint.sh
-ADD         https://raw.githubusercontent.com/docker/docker/${version}/hack/dind /usr/local/bin/dind
+ADD         https://raw.githubusercontent.com/docker/docker/v${version}/hack/dind /usr/local/bin/dind
 
             # Install docker
 RUN         apt-get update && \
