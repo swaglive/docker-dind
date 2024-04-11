@@ -82,7 +82,7 @@ jobs:
       uses: docker/build-push-action@v5
       id: build
       with:
-        context: ${{ matrix.version_major }}/${{ matrix.flavor }}
+        context: ${{ matrix.flavor }}
         build-args: |
           version=${{ matrix.version }}
           version_major=${{ matrix.version_major }}
