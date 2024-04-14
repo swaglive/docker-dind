@@ -26,7 +26,8 @@ RUN         apt-get update && \
                 iptables \
                 iproute2 \
                 openssl \
-                tini && \
+                tini \
+                kmod && \
             . /etc/os-release; version_major=$(echo ${version} | cut -d. -f1); curl -s --parallel \
                 --output /usr/local/bin/modprobe https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/cli/modprobe.sh \
                 --output /usr/local/bin/dockerd-entrypoint.sh https://raw.githubusercontent.com/docker-library/docker/master/${version_major}/dind/dockerd-entrypoint.sh \
