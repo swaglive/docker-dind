@@ -22,10 +22,6 @@ jobs:
         flavor:
         - nvidia
         include:
-        - version: "25.0.5"
-          version_major: "25"
-        - version: "26.0.1"
-          version_major: "26"
         - flavor: nvidia
           suffix: -nvidia
 
@@ -82,7 +78,6 @@ jobs:
         context: ${{ matrix.flavor }}
         build-args: |
           version=${{ matrix.version }}
-          version_major=${{ matrix.version_major }}
           nvidia_container_toolkit=${{ matrix.nvidia_container_toolkit }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
