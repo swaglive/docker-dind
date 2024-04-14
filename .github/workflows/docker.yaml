@@ -40,10 +40,7 @@ jobs:
         GITHUB_REPOSITORY_NAME: ${{ github.event.repository.name }}
       with:
         script: |
-          const os = require('os')
-
-          core.exportVariable('NPROC', os.cpus().length * 2)
-          core.setOutput('NPROC', os.cpus().length * 2)
+          core.setOutput('nproc', require('os').cpus().length * 2)
 
           core.setOutput('image-owner', process.env.GITHUB_REPOSITORY_OWNER)
           core.setOutput('image-name', process.env.GITHUB_REPOSITORY_NAME.replace(/^docker-/, ''))
