@@ -43,6 +43,9 @@ RUN         apt-get update && \
             rm *.deb && \
             # Setup
             ln -s $(which tini) /usr/bin/docker-init && \
+            # HACK: ubuntu 22.04 uses iptables-nft by default, but docker doesn't support it yet
+            update-alternatives --set iptables $(which iptables-legacy) && \
+            update-alternatives --set ip6tables $(which ip6tables-legacy) && \
             chmod +x \
                 /usr/local/bin/modprobe \
                 /usr/local/bin/dockerd-entrypoint.sh \
