@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - master
+    - feature/archlinux
     tags:
 
 jobs:
@@ -23,6 +24,9 @@ jobs:
         include:
         - flavor: nvidia
           suffix: -nvidia
+          # NOTE: version 1.13.5
+          version_libnvidia_container: 1a8bdbb5898b4fcfc273b7c372938054e00e3fd8
+          version_nvidia_container_toolkit: 19b9024e3ed404609a2e31f52683385aaa726db6
 
     steps:
     - name: Checkout
@@ -77,6 +81,8 @@ jobs:
         context: ${{ matrix.flavor }}
         build-args: |
           version=${{ matrix.version }}
+          version_nvidia_container_toolkit=${{ matrix.version_nvidia_container_toolkit }}
+          version_libnvidia_container=${{ matrix.version_libnvidia_container }}
         push: true
         labels: ${{ steps.meta.outputs.labels }}
         tags: ${{ steps.meta.outputs.tags }}
